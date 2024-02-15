@@ -37,30 +37,30 @@ const reset = () => {
 /* filterTemples Function */
 const filterTemples = (temples) => {
    reset(); // This resets the display before applying any filtering
- 
+
    const filterElement = document.getElementById("filtered");
    const filter = filterElement.value;
- 
+
    switch (filter) {
-     case "utah":
-       displayTemples(temples.filter(temple => temple.location.toLowerCase().includes("utah")));
-       break;
- 
-     case "nonutah":
-       displayTemples(temples.filter(temple => !temple.location.toLowerCase().includes("utah")));
-       break;
- 
-     case "older":
-       displayTemples(temples.filter(temple => new Date(temple.dedicated) < new Date(1950, 0, 1)));
-       break;
- 
-     case "all":
-     default:
-       displayTemples(temples);
-       break;
+      case "utah":
+         displayTemples(temples.filter(temple => temple.location.toLowerCase().includes("utah")));
+         break;
+
+      case "nonutah":
+         displayTemples(temples.filter(temple => !temple.location.toLowerCase().includes("utah")));
+         break;
+
+      case "older":
+         displayTemples(temples.filter(temple => new Date(temple.dedicated) < new Date(1950, 0, 1)));
+         break;
+
+      case "all":
+      default:
+         displayTemples(temples);
+         break;
    }
- };
-var change = document.querySelector("#filtered").addEventListener("change", () => {filterTemples(templeList)});
+};
+var change = document.querySelector("#filtered").addEventListener("change", () => { filterTemples(templeList) });
 getTemples();
 
 /* Event Listener */

@@ -1,0 +1,16 @@
+
+main {
+    margin: 0 auto;
+}
+#userinfo {
+    background-color: bisque;
+}
+#button {
+    height: 20px;
+    width: 60px;
+    justify-content: center;
+    text-align: center;
+}
+#output {
+    background-color: aquamarine;
+}
