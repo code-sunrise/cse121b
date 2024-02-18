@@ -15,7 +15,7 @@ var userInfo = [];
 var sunsetArray = [];
 var timesArray = [];
 
-//use (lat, lng) => sunset array
+//use (lat, lng) for sunset array which lists solar events.
 const solarEvents = async (lat, lon) => {
     var solarAPI = "https://api.sunrise-sunset.org/json?";
     var latitude = "lat=" + lat;
@@ -29,7 +29,7 @@ const solarEvents = async (lat, lon) => {
     await fetch(solarAPI + latitude + longitude + tomorrow).then(response => response.json()).then(data => { sunsetArray.push(data) });
 };
 
-//fetch ip address
+//fetch ip address and get the api data needed for requesting the other api
 const userData = async () => {
     await fetch('https://ipapi.co/json').then(response => response.json()).then(data => {
         userInfo.push(data);
@@ -38,9 +38,12 @@ const userData = async () => {
 /*Make sure the UTC time works for the timezone the user is in */
 
 const utcOffset = (utcTime, offset) => {
+    /*since it's easier I'm splitting the time using the -2 for the minutes in the strings
+    and the : for the hour and a space " " for the AM or PM. I can factor the time difference
+    easier this way that whatever I was trying before.*/
     let [time, period] = utcTime.split(' ');
     let [hours, minutes] = time.split(':').map(Number);
-    console.log(period, hours, minutes);
+    //console.log(period, hours, minutes);
     offsetSign = offset < 0 ? -1 : 1;
     offsetHours = Number(offset.slice(0, -2));
     offsetMinutes = Number(offset.slice(-2));
@@ -49,13 +52,16 @@ const utcOffset = (utcTime, offset) => {
         offsetMinutes = offsetMinutes * offsetSign
         minutes += offsetMinutes
     }
+    /*if the minutes add up to more than 60 we can add an hour and -60*/
     if (minutes > 60) {
         hours += 1
         minutes -= 60
-    } else if (minutes < 0) {
+    } /* if the minutes fall below 0 then you subtract an hour and add 60 to the negative number */
+    else if (minutes < 0) {
         hours -= 1
         minutes += 60
     }
+    /*if the hour offset is below 0, we can add 12 and switch the period*/
     hours = hours + offsetHours;
     if (hours < 0) {
         hours += 12;
@@ -66,6 +72,7 @@ const utcOffset = (utcTime, offset) => {
             period = 'AM';
         }
     }
+    /*if the offset is above 12, we can subtract 12 and switch the period*/
     if (hours > 12) {
         hours -= 12;
         if (period === 'AM') {
@@ -74,16 +81,14 @@ const utcOffset = (utcTime, offset) => {
         else if (period === 'PM') {
             period = 'AM';
         }
-        timeObject = {
+        /* push object to the array with the different strings/numbers */
+        let timeObject = {
             hours: hours,
             minutes: minutes,
             period: period
         }
         timesArray.push(timeObject)
     }
-    /*if the hour offset is 00, we can skip adding minutes*/
-    /*if the offset is below 0, we can add 12 and switch the period*/
-    /*if the offset is above 12, we can subtract 12 and switch the period*/
 };
 const localTime = () => {
     return new Promise((resolve, reject) => {
@@ -101,26 +106,31 @@ const localTime = () => {
             period: currentPeriod
         }
         timesArray.push(timeObject);
-       // console.log(timesArray)
+        // console.log(timesArray)
 
         //times
         let sunrise = (sunsetArray[0].results.sunrise);
         let sunset = (sunsetArray[0].results.sunset);
         let sunriseTomorrow = (sunsetArray[1].results.sunrise);
-        console.log(sunrise, sunset, sunriseTomorrow)
+        //console.log(sunrise, sunset, sunriseTomorrow)
         utcOffset(sunrise, userInfo[0].utc_offset);
         utcOffset(sunset, userInfo[0].utc_offset);
         utcOffset(sunriseTomorrow, userInfo[0].utc_offset);
         resolve();
-        console.log(timesArray)
+        //console.log(timesArray)
     });
 }
 const nearestTime = () => {
+    /*make the element for the DOM */
     const eventElement = document.getElementById("event")
     let heading = document.createElement("h2")
+    /*the condition is automatically set for sunrise tomorrow */
     let condition = `Sunrise ${timesArray[3].hours}:${timesArray[3].minutes} ${timesArray[3].period}`
+    /*if the AM/PM is the same check to see if the hours and minutes ... i just found a logic error oops
+    if the hours are less it should set the condition, because the hours could be less but hte minutes more
+    and thats no bueno it would skip.*/
     if (timesArray[0].period === timesArray[1].period) {
-        if (timesArray[0].hours < timesArray[1].hours) {
+        if (timesArray[0].hours <= timesArray[1].hours) {
             if (timesArray[0].minutes < timesArray[1].minutes) {
                 condition = `Sunrise ${timesArray[1].hours}:${timesArray[1].minutes} ${timesArray[1].period}`
             }
