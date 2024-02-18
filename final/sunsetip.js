@@ -96,29 +96,24 @@ const localTime = () => {
         let now = new Date();
         let currentHours = now.getUTCHours();
         let currentMinutes = now.getUTCMinutes();
+        let currentSeconds = "00"
+        console.log(currentHours, currentMinutes)
         let currentPeriod = 'AM'
         if (currentHours > 12) {
             currentHours -= 12;
             currentPeriod = 'PM'
         }
-        let timeObject = {
-            hours: currentHours,
-            minutes: currentMinutes,
-            period: currentPeriod
-        }
-        timesArray.push(timeObject);
-        // console.log(timesArray)
-
+        let currentUTC = `${currentHours}:${currentMinutes}:${currentSeconds} ${currentPeriod}`
+        utcOffset(currentUTC, userInfo[0].utc_offset)
         //times
         let sunrise = (sunsetArray[0].results.sunrise);
         let sunset = (sunsetArray[0].results.sunset);
         let sunriseTomorrow = (sunsetArray[1].results.sunrise);
-        //console.log(sunrise, sunset, sunriseTomorrow)
+        console.log(sunrise, sunset, sunriseTomorrow)
         utcOffset(sunrise, userInfo[0].utc_offset);
         utcOffset(sunset, userInfo[0].utc_offset);
         utcOffset(sunriseTomorrow, userInfo[0].utc_offset);
         resolve();
-        //console.log(timesArray)
     });
 }
 const nearestTime = () => {
@@ -132,27 +127,21 @@ const nearestTime = () => {
     if the hours are less it should set the condition, because the hours could be less but hte minutes more
     and thats no bueno it would skip.*/
     if (timesArray[0].period === timesArray[1].period &&
-        timesArray[0].hours <= timesArray[1].hours
-    ) {
-        if (
-            timesArray[0].period === timesArray[1].period &&
-            timesArray[0].hours < timesArray[1].hours &&
-            timesArray[0].minutes < timesArray[1].minutes
-        ) {
-            condition = `Sunrise ${timesArray[1].hours}:${timesArray[1].minutes} ${timesArray[1].period}`
-        }
-        else if (timesArray[0].hours <= timesArray[2].hours) {
-            if (timesArray[0].hours === timesArray[2].hours ||
-                timesArray[0].minutes <= timesArray[2].minutes) {
-                condition = `Sunset ${timesArray[2].hours}:${timesArray[2].minutes} ${timesArray[2].period}`
-            }
-            else {
-                condition = `Sunrise ${timesArray[3].hours}:${timesArray[3].minutes} ${timesArray[3].period}`
-            }
-        }}
-        heading.innerHTML = condition;
-        eventElement.appendChild(heading);
+        timesArray[0].hours < timesArray[1].hours ||
+        timesArray[0].hours === timesArray[1].hours &&
+        timesArray[0].minutes <= timesArray[1].minutes) {
+        condition = `Sunrise ${timesArray[1].hours}:${timesArray[1].minutes} ${timesArray[1].period}`
     }
-    /*execute functions*/
-    userData().then(() => solarEvents(userInfo[0].latitude, userInfo[0].longitude).then(() => localTime().then(() => nearestTime())));
-    console.log(userInfo, sunsetArray, timesArray)
+    else if (timesArray[0].period === timesArray[2].period &&
+        timesArray[0].hours < timesArray[2].hours ||
+        timesArray[0].hours === timesArray[2].hours &&
+        timesArray[0].minutes <= timesArray[2].minutes) {
+        condition = `Sunset ${timesArray[2].hours}:${timesArray[2].minutes} ${timesArray[2].period}`
+    }
+    heading.innerHTML = condition;
+    eventElement.appendChild(heading);
+}
+
+/*execute functions*/
+userData().then(() => solarEvents(userInfo[0].latitude, userInfo[0].longitude).then(() => localTime().then(() => nearestTime())));
+console.log(userInfo, sunsetArray, timesArray)
