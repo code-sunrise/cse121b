@@ -141,7 +141,7 @@ const nearestTime = () => {
     else if (timesArray[0].hours <= timesArray[2].hours) {
         if (timesArray[0].hours === timesArray[2].hours ||
             timesArray[0].minutes <= timesArray[2].minutes){
-        condition = `Sunrise ${timesArray[2].hours}:${timesArray[2].minutes} ${timesArray[2].period}`
+        condition = `Sunset ${timesArray[2].hours}:${timesArray[2].minutes} ${timesArray[2].period}`
     }
     else {
         condition = `Sunrise ${timesArray[3].hours}:${timesArray[3].minutes} ${timesArray[3].period}`
