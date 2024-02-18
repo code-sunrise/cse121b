@@ -126,21 +126,26 @@ const nearestTime = () => {
     const eventElement = document.getElementById("event")
     let heading = document.createElement("h2")
     /*the condition is automatically set for sunrise tomorrow */
-    let condition = `Sunrise ${timesArray[3].hours}:${timesArray[3].minutes} ${timesArray[3].period}`
+    let condition;
     /*if the AM/PM is the same check to see if the hours and minutes ... i just found a logic error oops
     if the hours are less it should set the condition, because the hours could be less but hte minutes more
     and thats no bueno it would skip.*/
-    if (timesArray[0].period === timesArray[1].period) {
-        if (timesArray[0].hours <= timesArray[1].hours) {
-            if (timesArray[0].minutes < timesArray[1].minutes) {
-                condition = `Sunrise ${timesArray[1].hours}:${timesArray[1].minutes} ${timesArray[1].period}`
-            }
+    if (timesArray[0].period === timesArray[1].period &&
+        timesArray[0].hours <= timesArray[1].hours
+    ) {
+        if (timesArray[0].hours === timesArray[1].hours &&
+            timesArray[0].minutes <= timesArray[1].minutes) {
+            condition = `Sunrise ${timesArray[1].hours}:${timesArray[1].minutes} ${timesArray[1].period}`
         }
     }
-    else if (timesArray[0].hours < timesArray[2].hours) {
-        if (timesArray[0].minutes < timesArray[2].minutes) {
-            condition = `Sunrise ${timesArray[2].hours}:${timesArray[2].minutes} ${timesArray[2].period}`
-        }
+    else if (timesArray[0].hours <= timesArray[2].hours) {
+        if (timesArray[0].hours === timesArray[2].hours &&
+            timesArray[0].minutes <= timesArray[2].minutes){
+        condition = `Sunrise ${timesArray[2].hours}:${timesArray[2].minutes} ${timesArray[2].period}`
+    }
+    else {
+        condition = `Sunrise ${timesArray[3].hours}:${timesArray[3].minutes} ${timesArray[3].period}`
+    }
     }
     heading.innerHTML = condition;
     eventElement.appendChild(heading);
