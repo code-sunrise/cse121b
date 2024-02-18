@@ -82,13 +82,14 @@ const utcOffset = (utcTime, offset) => {
             period = 'AM';
         }
         /* push object to the array with the different strings/numbers */
-        let timeObject = {
-            hours: hours,
-            minutes: minutes,
-            period: period
-        }
-        timesArray.push(timeObject)
     }
+    let timeObject = {
+        hours: hours,
+        minutes: minutes,
+        period: period
+    }
+    timesArray.push(timeObject)
+    console.log(timeObject)
 };
 const localTime = () => {
     return new Promise((resolve, reject) => {
