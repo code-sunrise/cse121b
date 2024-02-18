@@ -126,7 +126,8 @@ const nearestTime = () => {
     const eventElement = document.getElementById("event")
     let heading = document.createElement("h2")
     /*the condition is automatically set for sunrise tomorrow */
-    let condition;
+    let condition = `Sunrise ${timesArray[3].hours}:${timesArray[3].minutes} ${timesArray[3].period}`
+
     /*if the AM/PM is the same check to see if the hours and minutes ... i just found a logic error oops
     if the hours are less it should set the condition, because the hours could be less but hte minutes more
     and thats no bueno it would skip.*/
