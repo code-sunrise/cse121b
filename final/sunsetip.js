@@ -133,13 +133,13 @@ const nearestTime = () => {
     if (timesArray[0].period === timesArray[1].period &&
         timesArray[0].hours <= timesArray[1].hours
     ) {
-        if (timesArray[0].hours === timesArray[1].hours &&
+        if (timesArray[0].hours < timesArray[1].hours ||
             timesArray[0].minutes <= timesArray[1].minutes) {
             condition = `Sunrise ${timesArray[1].hours}:${timesArray[1].minutes} ${timesArray[1].period}`
         }
     }
     else if (timesArray[0].hours <= timesArray[2].hours) {
-        if (timesArray[0].hours === timesArray[2].hours &&
+        if (timesArray[0].hours === timesArray[2].hours ||
             timesArray[0].minutes <= timesArray[2].minutes){
         condition = `Sunrise ${timesArray[2].hours}:${timesArray[2].minutes} ${timesArray[2].period}`
     }
