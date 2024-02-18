@@ -134,23 +134,25 @@ const nearestTime = () => {
     if (timesArray[0].period === timesArray[1].period &&
         timesArray[0].hours <= timesArray[1].hours
     ) {
-        if (timesArray[0].hours < timesArray[1].hours ||
-            timesArray[0].minutes <= timesArray[1].minutes) {
+        if (
+            timesArray[0].period === timesArray[1].period &&
+            timesArray[0].hours < timesArray[1].hours &&
+            timesArray[0].minutes < timesArray[1].minutes
+        ) {
             condition = `Sunrise ${timesArray[1].hours}:${timesArray[1].minutes} ${timesArray[1].period}`
         }
+        else if (timesArray[0].hours <= timesArray[2].hours) {
+            if (timesArray[0].hours === timesArray[2].hours ||
+                timesArray[0].minutes <= timesArray[2].minutes) {
+                condition = `Sunset ${timesArray[2].hours}:${timesArray[2].minutes} ${timesArray[2].period}`
+            }
+            else {
+                condition = `Sunrise ${timesArray[3].hours}:${timesArray[3].minutes} ${timesArray[3].period}`
+            }
+        }}
+        heading.innerHTML = condition;
+        eventElement.appendChild(heading);
     }
-    else if (timesArray[0].hours <= timesArray[2].hours) {
-        if (timesArray[0].hours === timesArray[2].hours ||
-            timesArray[0].minutes <= timesArray[2].minutes){
-        condition = `Sunrise ${timesArray[2].hours}:${timesArray[2].minutes} ${timesArray[2].period}`
-    }
-    else {
-        condition = `Sunrise ${timesArray[3].hours}:${timesArray[3].minutes} ${timesArray[3].period}`
-    }
-    }
-    heading.innerHTML = condition;
-    eventElement.appendChild(heading);
-}
-/*execute functions*/
-userData().then(() => solarEvents(userInfo[0].latitude, userInfo[0].longitude).then(() => localTime().then(() => nearestTime())));
-console.log(userInfo, sunsetArray, timesArray)
+    /*execute functions*/
+    userData().then(() => solarEvents(userInfo[0].latitude, userInfo[0].longitude).then(() => localTime().then(() => nearestTime())));
+    console.log(userInfo, sunsetArray, timesArray)
